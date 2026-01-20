@@ -1,0 +1,37 @@
+/**
+ * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/core/usecase.md
+ */
+import { ILoggerAdapter } from '@/infra/logger'
+import { CreatedModel } from '@/infra/repository'
+import { ValidateSchema } from '@/utils/decorators'
+import { IDGeneratorUtils } from '@/utils/id-generator'
+import { IUsecase } from '@/utils/usecase'
+import { Infer } from '@/utils/validator'
+
+import { IRoleRepository } from '../repository/role'
+import { RoleEntity, RoleEntitySchema } from './../entity/role'
+
+export const RoleCreateSchema = RoleEntitySchema.pick({
+  name: true
+}).strict()
+
+export class RoleCreateUsecase implements IUsecase {
+  constructor(
+    private readonly roleRepository: IRoleRepository,
+    private readonly loggerService: ILoggerAdapter
+  ) {}
+
+  @ValidateSchema(RoleCreateSchema)
+  async execute(input: RoleCreateInput): Promise<RoleCreateOutput> {
+    const entity = new RoleEntity({ id: IDGeneratorUtils.uuid(), ...input })
+
+    const role = await this.roleRepository.create(entity.toObject())
+
+    this.loggerService.info({ message: 'role created.', obj: { role } })
+
+    return role
+  }
+}
+
+export type RoleCreateInput = Infer<typeof RoleCreateSchema>
+export type RoleCreateOutput = CreatedModel
