@@ -13,7 +13,7 @@ import { EnvEnum } from './types'
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env']
+      envFilePath: ['.example.env']
     })
   ],
   providers: [

@@ -164,7 +164,7 @@ const pgInstrumentation = new PgInstrumentation({
 
 const sdk = new NodeSDK({
   traceExporter: tracerExporter,
-  metricReader,
+  metricReaders: [metricReader],
   instrumentations: [httpInstrumentation, redisInstrumentation, mongodbInstrumentation, pgInstrumentation],
   serviceName: name
 })
@@ -231,9 +231,9 @@ const getTraceId = (request: IncomingMessage | ClientRequest) => {
 const setTraceId = (request: IncomingMessage | ClientRequest) => {
   const newTraceId = IDGeneratorUtils.uuid()
   if ('setHeader' in request) {
-    ; (request as ClientRequest).setHeader('traceid', newTraceId)
+    ;(request as ClientRequest).setHeader('traceid', newTraceId)
   }
-  ; (request as IncomingMessage).headers = {
+  ;(request as IncomingMessage).headers = {
     ...(request as IncomingMessage).headers,
     traceid: newTraceId
   }

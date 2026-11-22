@@ -1,0 +1,9 @@
+allowBuilds:
+  '@parcel/watcher': true
+  '@playwright/browser-chromium': true
+  '@scarf/scarf': true
+  '@swc/core': true
+  cpu-features: true
+  protobufjs: true
+  ssh2: true
+  unix-dgram: true

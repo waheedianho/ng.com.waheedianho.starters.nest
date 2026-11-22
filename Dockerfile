@@ -1,46 +1,51 @@
-# @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/setup/docker.md
 
 # =============================================================================
 # STAGE 1: Build (using full Node image to compile the app)
 # =============================================================================
-FROM node:22.12 AS build
+FROM node:24 AS build
 
 WORKDIR /app
 
+# Enabe Core pack for pnpm
+RUN corepack enable
+
 # Copy package files first (better layer caching)
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install ALL dependencies (needed for build)
-RUN npm ci && npm install @swc/cli @swc/core --save-dev
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # =============================================================================
 # STAGE 2: Production (smaller image for runtime)
 # =============================================================================
-FROM node:22.12-alpine AS production
+FROM node:24-alpine AS production
 
 # Add labels for better maintainability
-LABEL maintainer="mike.rodrigues.lima@gmail.com"
-LABEL description="NestJS Microservice Boilerplate API"
+# LABEL maintainer="mike.rodrigues.lima@gmail.com"
+LABEL description="ng.com.waheedianho.starters.nest template"
 
 # Set NODE_ENV
-ENV NODE_ENV=prod
+ENV NODE_ENV=production
 
 WORKDIR /app
 
+# Enabe Core pack for pnpm
+RUN corepack enable
+
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
-  adduser --system --uid 1001 nestjs
+    adduser --system --uid 1001 --ingroup nodejs nestjs
 
 # Copy only production dependencies
-COPY package*.json ./
-RUN npm ci --omit=dev --ignore-scripts && \
-  npm cache clean --force
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+RUN pnpm install --prod --frozen-lockfile
 
 # Copy built application from build stage
 COPY --from=build /app/dist ./dist

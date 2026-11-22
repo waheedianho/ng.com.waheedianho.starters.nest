@@ -2,7 +2,7 @@
  * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/controller.md
  */
 import { Controller, Get, Post, Req, Res, Version } from '@nestjs/common'
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
 
 import { IUserRepository } from '@/core/user/repository/user'
 import { LoginInput, LoginOutput } from '@/core/user/use-cases/user-login'

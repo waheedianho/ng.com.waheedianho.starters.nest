@@ -1,6 +1,4 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/setup/husky.md
- */
+
 const { readdirSync } = require('fs');
 
 const getDirectories = (source) =>
@@ -17,6 +15,8 @@ for (const path of getDirectories('./src').map((p) => `./src/${p}`)) {
 scopes.push(
   'remove',
   'revert',
+  'fix',
+  'feature',
   'conflict',
   'config',
   'entity',

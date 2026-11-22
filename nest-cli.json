@@ -9,7 +9,7 @@
       "type": "swc",
       "options": {
         "copyFiles": true,
-        "quiet": true,
+        "quiet": false,
         "sync": true,
         "outDir": "dist",
         "watch": true,
