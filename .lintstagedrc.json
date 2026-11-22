@@ -1,6 +1,6 @@
 {
   "*.{ts,js}": [
     "eslint --fix",
-    "npm run test -- --findRelatedTests --passWithNoTests --bail"
+    "pnpm run test --findRelatedTests --passWithNoTests --bail"
   ]
 }

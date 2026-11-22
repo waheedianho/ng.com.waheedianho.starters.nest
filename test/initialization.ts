@@ -1,9 +1,20 @@
 import { execSync } from 'child_process';
+import { randomBytes } from 'node:crypto';
+
+import jwt from 'jsonwebtoken';
+
 jest.setTimeout(60000);
 
+const testJwtSecret = randomBytes(32).toString('hex');
 process.env.NODE_ENV = 'test';
-process.env.TOKEN_TEST =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm5hbWUiOiJBZG1pbiIsImlkIjoiZGYwMzJmMTktZmM0Yy00NDA5LTlhYTktMzMyNjRkMmM3YjcxIiwiaWF0IjoxNzM4MjU3NjI0LCJleHAiOjE3Njk3OTM2MjR9.j0pvqjU3Z_BICTo5wFLrkLo7jTvjW6SWbHcGbJ5T6mQ';
+process.env.MONGO_DATABASE ||= 'nestjs_test';
+process.env.POSTGRES_DATABASE ||= 'nestjs_test';
+process.env.JWT_SECRET_KEY = testJwtSecret;
+process.env.TOKEN_TEST = jwt.sign(
+  { email: 'admin@admin.com', name: 'Admin', id: 'df032f19-fc4c-4409-9aa9-33264d2c7b71' },
+  testJwtSecret,
+  { expiresIn: '5m' }
+);
 
 jest.mock('pino-http', () => ({
   HttpLogger: {},

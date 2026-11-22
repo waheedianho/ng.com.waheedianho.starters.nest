@@ -32,3 +32,5 @@ lerna-debug.log*
 # Artillery generated files
 .artillery/output.yaml
 .artillery/OUTPUT.md
+
+.env

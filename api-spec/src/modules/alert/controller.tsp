@@ -13,7 +13,7 @@ namespace api.Alert;
 interface AlertController {
   @post
   @doc("Handle alert webhook")
-  @returnsDoc("Alert received successfully")
+  @returnsDoc("Alert received successfuldockly")
   handleAlert(@body body: unknown): AlertOutput;
 }
 
