@@ -1,21 +1,11 @@
-import { readFileSync } from 'fs';
-import { pathsToModuleNameMapper } from 'ts-jest';
-
-const tsconfig = JSON.parse(readFileSync('./tsconfig.json', 'utf-8'));
-const { compilerOptions } = tsconfig;
-
 export default {
-  moduleFileExtensions: ['js', 'json', 'ts'],
-  rootDir: '../src/core',
-  testRegex: '.*\\.spec\\.ts$',
+  rootDir: '..',
+  preset: '<rootDir>/test/jest.config.ts',
+  roots: ['<rootDir>/src/core'],
   transform: {
+    '^.+\\.js$': '@swc/jest',
     '^.+\\.(t|j)s$': 'ts-jest'
   },
-  transformIgnorePatterns: [
-    '/node_modules/(?!(@faker-js/faker|@mikemajesty/zod-mock-schema)/)'
-  ],
-  setupFilesAfterEnv: ['../../test/initialization.ts'],
-  testEnvironment: 'node',
   collectCoverage: true,
   coverageThreshold: {
     global: {
@@ -25,8 +15,5 @@ export default {
       statements: 100
     }
   },
-  collectCoverageFrom: ['**/*.ts'],
-  coverageDirectory: '../../coverage',
-  coverageReporters: ['json-summary', 'lcov'],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/../../' })
+  collectCoverageFrom: ['src/core/**/*.ts']
 };
