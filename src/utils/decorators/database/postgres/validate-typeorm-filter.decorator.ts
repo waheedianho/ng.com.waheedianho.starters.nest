@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/decorators/convert-typeorm-filter.md
- */
 import { FindOperator, In, Raw } from 'typeorm'
 
 import { IEntity } from '@/utils/entity'

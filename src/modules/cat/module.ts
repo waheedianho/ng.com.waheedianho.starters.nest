@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/module.md
- */
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConditionalModule } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'

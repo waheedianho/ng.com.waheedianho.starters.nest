@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/infra/secrets.md
- */
 export abstract class ISecretsAdapter {
   ENV!: string
   TIMEOUT!: number

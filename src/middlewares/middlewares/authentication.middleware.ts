@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/middlewares/authentication.middleware.md
- */
 import { Injectable, NestMiddleware } from '@nestjs/common'
 import { SpanStatusCode } from '@opentelemetry/api'
 import { NextFunction, Request, Response } from 'express'

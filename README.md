@@ -1077,8 +1077,8 @@ src/
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/mikemajesty/nestjs-microservice-boilerplate-api.git
-cd nestjs-microservice-boilerplate-api
+git clone https://github.com/waheedianho/ng.com.waheedianho.starters.nest.git
+cd ng.com.waheedianho.starters.nest
 
 # Use correct Node version
 nvm install && nvm use
@@ -1342,15 +1342,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## Support
-
-- ⭐ Star this repository if you find it useful
-- 🐛 [Report bugs](https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/issues)
-- 💡 [Request features](https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/issues)
-- 📖 [Read the guides](guides/)
-
----
-
 <div align="center">
-  <p>Built with ❤️ by <a href="https://github.com/mikemajesty">Mike Lima</a></p>
+  <p>Built with ❤️ by <a href="https://github.com/waheedianho">Mike Lima</a></p>
 </div>

@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/middlewares/tracing.interceptor.md
- */
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common'
 import opentelemetry, {
   Attributes,

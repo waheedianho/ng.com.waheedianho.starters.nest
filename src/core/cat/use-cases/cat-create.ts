@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/core/usecase.md
- */
 import { CreatedModel } from '@/infra/repository'
 import { ValidateSchema } from '@/utils/decorators'
 import { IDGeneratorUtils } from '@/utils/id-generator'

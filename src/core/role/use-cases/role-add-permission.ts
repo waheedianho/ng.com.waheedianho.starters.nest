@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/core/usecase.md
- */
 import { PermissionEntity } from '@/core/permission/entity/permission'
 import { IPermissionRepository } from '@/core/permission/repository/permission'
 import { ValidateSchema } from '@/utils/decorators'

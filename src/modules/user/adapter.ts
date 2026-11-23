@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/adapter.md
- */
 import { UserChangePasswordInput, UserChangePasswordOutput } from '@/core/user/use-cases/user-change-password'
 import { UserCreateInput, UserCreateOutput } from '@/core/user/use-cases/user-create'
 import { UserDeleteInput, UserDeleteOutput } from '@/core/user/use-cases/user-delete'

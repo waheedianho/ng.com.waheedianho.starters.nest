@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/decorators/process.md
- */
 import { ChildProcess, fork } from 'child_process'
 import { red } from 'colorette'
 
@@ -16,9 +13,9 @@ export function RunInNewProcess(timeout?: number) {
 
         const child: ChildProcess = __filename.endsWith('.ts')
           ? fork(processFile, [], {
-            execArgv: ['-r', 'ts-node/register'],
-            silent: false
-          })
+              execArgv: ['-r', 'ts-node/register'],
+              silent: false
+            })
           : fork(processFile)
         let timeoutId: NodeJS.Timeout | null = null
         let isResolved = false

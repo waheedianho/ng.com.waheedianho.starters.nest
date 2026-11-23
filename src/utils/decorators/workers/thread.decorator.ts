@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/decorators/thread.md
- */
 import { red } from 'colorette'
 import { Worker } from 'worker_threads'
 

@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/utils/axios.md
- */
 import { AxiosError, AxiosInstance } from 'axios'
 import axiosRetry from 'axios-retry'
 import { AxiosConverter } from 'nestjs-convert-to-curl'

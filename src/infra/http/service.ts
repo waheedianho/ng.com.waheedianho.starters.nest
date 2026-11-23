@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/infra/http.md
- */
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import axiosBetterStacktrace from 'axios-better-stacktrace'
 import https from 'https'

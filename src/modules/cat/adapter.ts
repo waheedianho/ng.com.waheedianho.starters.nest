@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/adapter.md
- */
 import { CatCreateInput, CatCreateOutput } from '@/core/cat/use-cases/cat-create'
 import { CatDeleteInput, CatDeleteOutput } from '@/core/cat/use-cases/cat-delete'
 import { CatGetByIdInput, CatGetByIdOutput } from '@/core/cat/use-cases/cat-get-by-id'

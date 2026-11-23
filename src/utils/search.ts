@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/utils/search.md
- */
 import { Infer, InputValidator } from './validator'
 
 export type SearchInput<T> = { search: T | null }

@@ -1,7 +1,7 @@
 services:
-  nestjs-microservice-primary:
+  ng.com.waheedianho.starters.nest-primary:
     profiles: [mongo]
-    container_name: nestjs-microservice-primary
+    container_name: ng.com.waheedianho.starters.nest-primary
     image: mongo:7.0
     networks:
       - mongo-network
@@ -21,9 +21,9 @@ services:
     env_file:
       - .env
 
-  nestjs-microservice-secondary:
+  ng.com.waheedianho.starters.nest-secondary:
     profiles: [mongo]
-    container_name: nestjs-microservice-secondary
+    container_name: ng.com.waheedianho.starters.nest-secondary
     image: mongo:7.0
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
@@ -56,12 +56,12 @@ services:
     networks:
       - mongo-network
     depends_on:
-      - nestjs-microservice-primary
+      - ng.com.waheedianho.starters.nest-primary
     ports:
       - "27018:27017"
-  nestjs-microservice-tertiary:
+  ng.com.waheedianho.starters.nest-tertiary:
     profiles: [mongo]
-    container_name: nestjs-microservice-tertiary
+    container_name: ng.com.waheedianho.starters.nest-tertiary
     image: mongo:7.0
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')", "--quiet"]
@@ -94,7 +94,7 @@ services:
     networks:
       - mongo-network
     depends_on:
-      - nestjs-microservice-primary
+      - ng.com.waheedianho.starters.nest-primary
     ports:
       - "27019:27017"
       
@@ -103,11 +103,11 @@ services:
     container_name: mongo-init-replica
     image: mongo:7.0
     depends_on:
-      nestjs-microservice-primary:
+      ng.com.waheedianho.starters.nest-primary:
         condition: service_healthy
-      nestjs-microservice-secondary:
+      ng.com.waheedianho.starters.nest-secondary:
         condition: service_healthy
-      nestjs-microservice-tertiary:
+      ng.com.waheedianho.starters.nest-tertiary:
         condition: service_healthy
     networks:
       - mongo-network
@@ -117,14 +117,14 @@ services:
     entrypoint: ["/bin/sh", "/init-replica.sh"]
 
   postgres:
-    container_name: nestjs-microservice-postgres
+    container_name: ng.com.waheedianho.starters.nest-postgres
     image: postgres:16-alpine
     env_file:
       - .env
     ports:
       - '5432:5432'
     volumes:
-      - nestjs-microservice-postgres:/var/lib/postgresql/data
+      - ng.com.waheedianho.starters.nest-postgres:/var/lib/postgresql/data
       - .docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - postgres-network
@@ -136,11 +136,11 @@ services:
     restart: unless-stopped
 
   redis:
-    container_name: nestjs-microservice-redis
+    container_name: ng.com.waheedianho.starters.nest-redis
     image: redis:7.2-alpine
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     volumes:
-      - nestjs-microservice-redis:/data
+      - ng.com.waheedianho.starters.nest-redis:/data
     ports:
       - '6379:6379'
     networks:
@@ -154,7 +154,7 @@ services:
     restart: unless-stopped
 
   zipkin-all-in-one:
-    container_name: nestjs-microservice-zipkin-all-in-one
+    container_name: ng.com.waheedianho.starters.nest-zipkin-all-in-one
     image: openzipkin/zipkin:2.24
     networks:
       - collector-network
@@ -165,7 +165,7 @@ services:
     restart: unless-stopped
 
   prometheus:
-    container_name: nestjs-microservice-prometheus
+    container_name: ng.com.waheedianho.starters.nest-prometheus
     image: prom/prometheus:v2.51.0
     networks:
       - collector-network
@@ -183,7 +183,7 @@ services:
     restart: unless-stopped
 
   collector:
-    container_name: nestjs-microservice-collector
+    container_name: ng.com.waheedianho.starters.nest-collector
     image: otel/opentelemetry-collector-contrib:0.96.0
     command: ['--config=/conf/collector-config.yaml']
     networks:
@@ -200,7 +200,7 @@ services:
     restart: unless-stopped
 
   app-alertmanager:
-    container_name: nestjs-microservice-alertmanager
+    container_name: ng.com.waheedianho.starters.nest-alertmanager
     image: prom/alertmanager:v0.26.0
     networks:
       - collector-network
@@ -213,17 +213,17 @@ services:
 
   mongo-express:
     profiles: [mongo]
-    container_name: nestjs-microservice-mongo-express
+    container_name: ng.com.waheedianho.starters.nest-mongo-express
     image: mongo-express:1.0.0-20-alpine3.18
     depends_on:
-      nestjs-microservice-primary:
+      ng.com.waheedianho.starters.nest-primary:
         condition: service_healthy
-      nestjs-microservice-secondary:
+      ng.com.waheedianho.starters.nest-secondary:
         condition: service_healthy
-      nestjs-microservice-tertiary:
+      ng.com.waheedianho.starters.nest-tertiary:
         condition: service_healthy
     environment:
-      - ME_CONFIG_MONGODB_URL=mongodb://admin:admin123@nestjs-microservice-primary:27017,nestjs-microservice-secondary:27017,nestjs-microservice-tertiary:27017/nestjs_microservice?replicaSet=app&authSource=admin&readPreference=primaryPreferred&ssl=false
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:admin123@ng.com.waheedianho.starters.nest-primary:27017,ng.com.waheedianho.starters.nest-secondary:27017,ng.com.waheedianho.starters.nest-tertiary:27017/nestjs_microservice?replicaSet=app&authSource=admin&readPreference=primaryPreferred&ssl=false
       - ME_CONFIG_MONGODB_REPLICA_SET=app
       - ME_CONFIG_MONGODB_REPLICA_SET_NAME=app
       - ME_CONFIG_MONGODB_READ_PREFERENCE=primaryPreferred
@@ -236,7 +236,7 @@ services:
     restart: unless-stopped
 
   pgadmin:
-    container_name: nestjs-microservice-pgadmin
+    container_name: ng.com.waheedianho.starters.nest-pgadmin
     image: dpage/pgadmin4:8.5
     env_file:
       - .env
@@ -250,7 +250,7 @@ services:
     restart: unless-stopped
 
   grafana:
-    container_name: nestjs-microservice-grafana
+    container_name: ng.com.waheedianho.starters.nest-grafana
     image: grafana/grafana:10.4.0
     networks:
       - collector-network
@@ -273,7 +273,7 @@ services:
     restart: unless-stopped
 
   loki:
-    container_name: nestjs-microservice-loki
+    container_name: ng.com.waheedianho.starters.nest-loki
     image: grafana/loki:2.9.4
     command: -config.file=/etc/loki/local-config.yaml
     ports:
@@ -285,7 +285,7 @@ services:
     restart: unless-stopped
 
   promtail:
-    container_name: nestjs-microservice-promtail
+    container_name: ng.com.waheedianho.starters.nest-promtail
     image: grafana/promtail:2.9.4
     volumes:
       - /var/log:/var/log
@@ -299,8 +299,8 @@ services:
     restart: unless-stopped
 
 volumes:
-  nestjs-microservice-postgres:
-  nestjs-microservice-redis:
+  ng.com.waheedianho.starters.nest-postgres:
+  ng.com.waheedianho.starters.nest-redis:
   mongo-primary-data:
   mongo-secondary-data:
   mongo-tertiary-data:

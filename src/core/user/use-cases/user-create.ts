@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/core/usecase.md
- */
 import { RoleEnum } from '@/core/role/entity/role'
 import { IRoleRepository } from '@/core/role/repository/role'
 import { SendEmailInput } from '@/infra/email'
@@ -52,7 +49,7 @@ export class UserCreateUsecase implements IUsecase {
 
     const userExists = await this.userRepository.findOne({
       email: entity.email
-    }) 
+    })
 
     if (userExists) {
       throw new ApiConflictException('userExists')

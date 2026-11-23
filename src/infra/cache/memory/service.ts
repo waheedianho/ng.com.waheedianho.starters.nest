@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/infra/cache.md
- */
 import { Injectable } from '@nestjs/common'
 import NodeCache from 'node-cache'
 

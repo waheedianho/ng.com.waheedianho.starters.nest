@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/core/usecase.md
- */
 import { UserEntity } from '@/core/user/entity/user'
 import { UserPasswordEntity } from '@/core/user/entity/user-password'
 import { IUserRepository } from '@/core/user/repository/user'

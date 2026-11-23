@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/libs/metrics.md
- */
 import {
   Attributes,
   Counter,

@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/core/usecase.md
- */
 import { UserEntity, UserEntitySchema } from '@/core/user/entity/user'
 import { IUserRepository } from '@/core/user/repository/user'
 import { SendEmailInput } from '@/infra/email'
