@@ -2,13 +2,20 @@
  * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/controller.md
  */
 import { Controller, Delete, Get, HttpCode, Post, Put, Req, Version } from '@nestjs/common'
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
-import { PermissionCreateInput, PermissionCreateOutput } from '@/core/permission/use-cases/permission-create'
+import { PermissionEntitySchema } from '@/core/permission/entity/permission'
+import {
+  PermissionCreateInput,
+  PermissionCreateOutput,
+  PermissionCreateSchema
+} from '@/core/permission/use-cases/permission-create'
 import { PermissionDeleteInput, PermissionDeleteOutput } from '@/core/permission/use-cases/permission-delete'
 import { PermissionGetByIdInput, PermissionGetByIdOutput } from '@/core/permission/use-cases/permission-get-by-id'
 import { PermissionListInput, PermissionListOutput } from '@/core/permission/use-cases/permission-list'
 import { PermissionUpdateInput, PermissionUpdateOutput } from '@/core/permission/use-cases/permission-update'
 import { Permission } from '@/utils/decorators'
+import { ApiErrors, ApiPaginatedResponse, ApiResourceId, openApiSchema } from '@/utils/openapi'
 import { ApiRequest } from '@/utils/request'
 import { SearchHttpSchema } from '@/utils/search'
 import { SortHttpSchema } from '@/utils/sort'
@@ -21,6 +28,11 @@ import {
   IPermissionUpdateAdapter
 } from './adapter'
 
+const permissionSchema = openApiSchema(PermissionEntitySchema)
+
+@ApiTags('Permissions')
+@ApiBearerAuth()
+@ApiErrors(401, 403)
 @Controller('permissions')
 export class PermissionController {
   constructor(
@@ -31,6 +43,10 @@ export class PermissionController {
     private readonly deleteUsecase: IPermissionDeleteAdapter
   ) {}
 
+  @ApiOperation({ summary: 'Create a permission' })
+  @ApiBody({ schema: openApiSchema(PermissionCreateSchema) })
+  @ApiCreatedResponse({ schema: permissionSchema })
+  @ApiErrors(400, 409)
   @Post()
   @Version('1')
   @Permission('permission:create')
@@ -39,6 +55,11 @@ export class PermissionController {
     return await this.createUsecase.execute(body as PermissionCreateInput)
   }
 
+  @ApiOperation({ summary: 'Update a permission' })
+  @ApiResourceId()
+  @ApiBody({ schema: openApiSchema(PermissionCreateSchema.partial()) })
+  @ApiOkResponse({ schema: permissionSchema })
+  @ApiErrors(400, 404, 409)
   @Put(':id')
   @Version('1')
   @Permission('permission:update')
@@ -46,6 +67,10 @@ export class PermissionController {
     return await this.updateUsecase.execute({ ...body, id: params.id } as PermissionUpdateInput)
   }
 
+  @ApiOperation({ summary: 'Get a permission' })
+  @ApiResourceId()
+  @ApiOkResponse({ schema: permissionSchema })
+  @ApiErrors(400, 404)
   @Get(':id')
   @Version('1')
   @Permission('permission:getbyid')
@@ -53,6 +78,8 @@ export class PermissionController {
     return await this.getByIdUsecase.execute(params as PermissionGetByIdInput)
   }
 
+  @ApiOperation({ summary: 'List permissions' })
+  @ApiPaginatedResponse(PermissionEntitySchema)
   @Get()
   @Version('1')
   @Permission('permission:list')
@@ -67,6 +94,10 @@ export class PermissionController {
     return await this.listUsecase.execute(input)
   }
 
+  @ApiOperation({ summary: 'Delete a permission' })
+  @ApiResourceId()
+  @ApiOkResponse({ schema: permissionSchema })
+  @ApiErrors(400, 404)
   @Delete(':id')
   @Version('1')
   @Permission('permission:delete')

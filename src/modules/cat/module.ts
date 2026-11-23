@@ -2,8 +2,8 @@
  * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/module.md
  */
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
-import { getConnectionToken } from '@nestjs/mongoose'
-import mongoose, { Connection, PaginateModel, Schema } from 'mongoose'
+import { ConditionalModule } from '@nestjs/config'
+import { MongooseModule } from '@nestjs/mongoose'
 
 import { ICatRepository } from '@/core/cat/repository/cat'
 import { CatCreateUsecase } from '@/core/cat/use-cases/cat-create'
@@ -12,44 +12,26 @@ import { CatGetByIdUsecase } from '@/core/cat/use-cases/cat-get-by-id'
 import { CatListUsecase } from '@/core/cat/use-cases/cat-list'
 import { CatUpdateUsecase } from '@/core/cat/use-cases/cat-update'
 import { RedisCacheModule } from '@/infra/cache/redis'
-import { ConnectionName } from '@/infra/database/enum'
-import { Cat, CatDocument, CatSchema } from '@/infra/database/mongo/schemas/cat'
+import { Cat, CatSchema } from '@/infra/database/mongo/schemas/cat'
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger'
+import { isMongoEnabled } from '@/infra/secrets/types'
 import { TokenLibModule } from '@/libs/token'
 import { AuthenticationMiddleware } from '@/middlewares/middlewares'
-import { MongoRepositoryModelSessionType } from '@/utils/mongoose'
 
 import { ICatCreateAdapter, ICatDeleteAdapter, ICatGetByIdAdapter, ICatListAdapter, ICatUpdateAdapter } from './adapter'
 import { CatController } from './controller'
 import { CatRepository } from './repository'
 
 @Module({
-  imports: [TokenLibModule, LoggerModule, RedisCacheModule],
+  imports: [
+    TokenLibModule,
+    LoggerModule,
+    RedisCacheModule,
+    MongooseModule.forFeature([{ name: Cat.name, schema: CatSchema }])
+  ],
   controllers: [CatController],
   providers: [
-    {
-      provide: ICatRepository,
-      useFactory: async (connection: Connection) => {
-        type Model = mongoose.PaginateModel<CatDocument>
-
-        //  use if you want transaction
-        const repository: MongoRepositoryModelSessionType<PaginateModel<CatDocument>> = connection.model<
-          CatDocument,
-          Model
-        >(Cat.name, CatSchema as Schema)
-
-        repository.connection = connection
-
-        // use if you not want transaction
-        // const repository: PaginateModel<UserDocument> = connection.model<UserDocument, Model>(
-        //   User.name,
-        //   UserSchema as Schema
-        // );
-
-        return new CatRepository(repository)
-      },
-      inject: [getConnectionToken(ConnectionName.CATS)]
-    },
+    { provide: ICatRepository, useClass: CatRepository },
     {
       provide: ICatCreateAdapter,
       useFactory: (repository: ICatRepository) => new CatCreateUsecase(repository),
@@ -85,8 +67,14 @@ import { CatRepository } from './repository'
     ICatDeleteAdapter
   ]
 })
-export class CatModule implements NestModule {
+class CatFeatureModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthenticationMiddleware).forRoutes(CatController)
   }
 }
+
+@Module({
+  imports: [ConditionalModule.registerWhen(CatFeatureModule, ({ ENABLE_MONGO }) => isMongoEnabled(ENABLE_MONGO))],
+  exports: [ConditionalModule]
+})
+export class CatModule {}

@@ -11,15 +11,13 @@ import { UserEntitySchema } from '../entity/user'
 import { UserPasswordEntity } from '../entity/user-password'
 import { IUserRepository } from '../repository/user'
 
-export const UserChangePasswordSchema = UserEntitySchema.pick({
-  id: true
-}).and(
-  InputValidator.object({
-    password: InputValidator.string(),
-    newPassword: InputValidator.string(),
-    confirmPassword: InputValidator.string()
-  })
-)
+export const UserChangePasswordFieldsSchema = InputValidator.object({
+  password: InputValidator.string(),
+  newPassword: InputValidator.string(),
+  confirmPassword: InputValidator.string()
+})
+
+export const UserChangePasswordSchema = UserEntitySchema.pick({ id: true }).and(UserChangePasswordFieldsSchema)
 
 export class UserChangePasswordUsecase implements IUsecase {
   constructor(private readonly repository: IUserRepository) {}

@@ -50,9 +50,6 @@ RUN pnpm install --prod --frozen-lockfile
 # Copy built application from build stage
 COPY --from=build /app/dist ./dist
 
-# Copy OpenAPI spec (needed for Swagger)
-COPY --from=build /app/api-spec/tsp-output ./api-spec/tsp-output
-
 # Set ownership to non-root user
 RUN chown -R nestjs:nodejs /app
 

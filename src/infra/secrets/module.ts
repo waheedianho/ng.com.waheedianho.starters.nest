@@ -13,7 +13,7 @@ import { EnvEnum } from './types'
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.example.env']
+      envFilePath: ['.env']
     })
   ],
   providers: [
@@ -33,10 +33,12 @@ import { EnvEnum } from './types'
           DATE_FORMAT: InputValidator.string(),
           TZ: InputValidator.string(),
           MONGO: InputValidator.object({
-            MONGO_URL: InputValidator.string(),
-            MONGO_DATABASE: InputValidator.string(),
-            MONGO_EXPRESS_URL: InputValidator.string().url()
-          }),
+            MONGO_URL: InputValidator.string()
+              .trim()
+              .regex(/^mongodb(?:\+srv)?:\/\/.+/),
+            MONGO_DATABASE: InputValidator.string().trim().min(1),
+            MONGO_EXPRESS_URL: InputValidator.url().optional()
+          }).optional(),
           POSTGRES: InputValidator.object({
             POSTGRES_URL: InputValidator.string().url(),
             POSTGRES_PGADMIN_URL: InputValidator.string().url()

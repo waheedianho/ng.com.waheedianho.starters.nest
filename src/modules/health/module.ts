@@ -10,7 +10,6 @@ import { DataSource } from 'typeorm'
 
 import { ICacheAdapter } from '@/infra/cache'
 import { RedisCacheModule } from '@/infra/cache/redis'
-import { ConnectionName } from '@/infra/database/enum'
 import { PostgresDatabaseModule } from '@/infra/database/postgres'
 import { ILoggerAdapter, LoggerModule } from '@/infra/logger'
 
@@ -25,7 +24,7 @@ import { HealthService } from './service'
     {
       provide: IHealthAdapter,
       useFactory: async (
-        connection: Connection,
+        connection: Connection | undefined,
         dataSource: DataSource,
         cache: ICacheAdapter<RedisClientType>,
         logger: ILoggerAdapter
@@ -37,7 +36,7 @@ import { HealthService } from './service'
         return service
       },
       inject: [
-        getConnectionToken(ConnectionName.CATS),
+        { token: getConnectionToken(), optional: true },
         getDataSourceToken(),
         ICacheAdapter<RedisClientType>,
         ILoggerAdapter

@@ -13,11 +13,11 @@ import { Infer, InputValidator } from '@/utils/validator'
 import { UserEntity, UserEntitySchema } from '../entity/user'
 import { IUserRepository } from '../repository/user'
 
-export const UserUpdateSchema = UserEntitySchema.pick({
-  id: true
-})
-  .and(UserEntitySchema.pick({ name: true, email: true }).partial())
+export const UserUpdateFieldsSchema = UserEntitySchema.pick({ name: true, email: true })
+  .partial()
   .and(InputValidator.object({ roles: InputValidator.array(InputValidator.enum(RoleEnum)).optional() }))
+
+export const UserUpdateSchema = UserEntitySchema.pick({ id: true }).and(UserUpdateFieldsSchema)
 
 export class UserUpdateUsecase implements IUsecase {
   constructor(

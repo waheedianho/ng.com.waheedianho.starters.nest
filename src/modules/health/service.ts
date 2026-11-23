@@ -15,7 +15,7 @@ import { DatabaseConnectionOutput, DatabaseMemoryOutput, HealthStatus, Load } fr
 
 export class HealthService implements IHealthAdapter {
   postgres!: DataSource
-  mongo!: Connection
+  mongo?: Connection
   redis!: ICacheAdapter<RedisClientType>
 
   constructor(private readonly logger: ILoggerAdapter) {}
@@ -42,7 +42,7 @@ export class HealthService implements IHealthAdapter {
 
   async getMongoMemory(): Promise<DatabaseMemoryOutput> {
     try {
-      if (this.mongo.readyState !== 1 || !this.mongo.db) {
+      if (this.mongo?.readyState !== 1 || !this.mongo.db) {
         return { ramUsed: 'N/A', reservedMemory: 'N/A' }
       }
 
@@ -70,11 +70,11 @@ export class HealthService implements IHealthAdapter {
   }
   async getMongoConnections(): Promise<DatabaseConnectionOutput> {
     try {
-      if (this.mongo.readyState !== 1) {
+      if (this.mongo && this.mongo.readyState !== 1) {
         throw new ApiInternalServerException('mongo down')
       }
 
-      if (this.mongo.db) {
+      if (this.mongo?.db) {
         const status = await this.mongo.db.command({ serverStatus: 1 })
 
         return status.connections
@@ -214,6 +214,8 @@ export class HealthService implements IHealthAdapter {
   }
 
   getMongoStatus() {
+    if (!this.mongo) return HealthStatus.DISABLED
+
     try {
       return this.mongo.readyState === 1 ? HealthStatus.UP : HealthStatus.DOWN
     } catch (error) {
