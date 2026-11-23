@@ -1,4 +1,4 @@
-const { execSync } = require("child_process");
+const { spawnSync } = require("node:child_process");
 const DBTYPE = ["postgres", "mongo"];
 
 const dbType = process.argv[2];
@@ -14,13 +14,35 @@ if (!migrationName) {
   process.exit(1);
 }
 
-let cmd = "";
-if (dbType === "postgres") {
-  const migrationDir = `src/infra/database/postgres/migrations`;
-  cmd = `ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:generate ${migrationDir}/${migrationName} -d src/infra/database/postgres/config.ts`;
-} else if (dbType === "mongo") {
-  cmd = `ts-node -r tsconfig-paths/register ./src/infra/database/mongo/config.ts new -n ${migrationName}`;
-}
+const migrationArgs = dbType === "postgres"
+  ? [
+      "./node_modules/typeorm/cli.js",
+      "migration:generate",
+      `src/infra/database/postgres/migrations/${migrationName}`,
+      "-d",
+      "src/infra/database/postgres/config.ts"
+    ]
+  : ["./src/infra/database/mongo/config.ts", "new", "-n", migrationName];
 
 console.log(`🚀 Generating migration: ${migrationName}`);
-execSync(cmd, { stdio: "inherit" });
+const result = spawnSync(
+  process.execPath,
+  [require.resolve("ts-node/dist/bin.js"), "-r", "tsconfig-paths/register", ...migrationArgs],
+  { encoding: "utf8", stdio: ["inherit", "pipe", "pipe"] }
+);
+
+process.stdout.write(result.stdout ?? "");
+process.stderr.write(result.stderr ?? "");
+
+if (result.error) {
+  console.error(result.error.message);
+}
+if (result.signal) {
+  console.error(`Migration process stopped by ${result.signal}`);
+}
+
+// TypeORM exits with code 1 for both an unchanged schema and generation errors.
+const schemaUnchanged = dbType === "postgres" && result.status === 1 &&
+  result.stdout?.includes("No changes in database schema were found - cannot generate a migration.");
+
+process.exitCode = schemaUnchanged ? 0 : (result.status ?? 1);
