@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/adapter.md
- */
 import { Connection } from 'mongoose'
 import { RedisClientType } from 'redis'
 import { DataSource } from 'typeorm'

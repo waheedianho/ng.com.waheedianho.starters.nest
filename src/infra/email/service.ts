@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/infra/email.md
- */
 import { Injectable } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import fs from 'fs'
@@ -62,4 +59,3 @@ export type SendEmailInput = {
 }
 
 export type SendEmailOutput = SMTPTransport.SentMessageInfo
-

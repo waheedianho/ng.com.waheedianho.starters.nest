@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/infra/logger.md
- */
 import { IncomingMessage, ServerResponse } from 'node:http'
 
 import { Injectable, InternalServerErrorException, Scope } from '@nestjs/common'

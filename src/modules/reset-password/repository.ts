@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/repository.md
- */
 import { Injectable } from '@nestjs/common'
 import { FindOptionsWhere, MoreThan, Repository } from 'typeorm'
 

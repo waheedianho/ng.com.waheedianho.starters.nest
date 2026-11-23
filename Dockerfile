@@ -27,7 +27,7 @@ RUN pnpm run build
 FROM node:24-alpine AS production
 
 # Add labels for better maintainability
-# LABEL maintainer="mike.rodrigues.lima@gmail.com"
+# LABEL maintainer="waheedianho65@gmail.com"
 LABEL description="ng.com.waheedianho.starters.nest template"
 
 # Set NODE_ENV

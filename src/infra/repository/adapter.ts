@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/infra/repository.md
- */
 import {
   CreatedModel,
   CreatedOrUpdateModel,
@@ -8,7 +5,7 @@ import {
   JoinType,
   RemovedModel,
   UpdatedModel
-} from './types';
+} from './types'
 
 export abstract class IRepository<T> {
   abstract create<TOptions = unknown>(document: T, saveOptions?: TOptions): Promise<CreatedModel>

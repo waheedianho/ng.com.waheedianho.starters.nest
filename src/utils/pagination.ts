@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/utils/pagination.md
- */
 import { SearchInput } from './search'
 import { SortInput } from './sort'
 import { Infer, InputValidator } from './validator'

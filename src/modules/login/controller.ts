@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/controller.md
- */
 import { Controller, Get, Post, Req, Res, Version } from '@nestjs/common'
 import { ApiBody, ApiCreatedResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
 import type { Request, Response } from 'express'

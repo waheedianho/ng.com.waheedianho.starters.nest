@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/utils/tracing.md
- */
 import { ClientRequest, IncomingMessage, RequestOptions, ServerResponse } from 'node:http'
 
 import { diag, DiagConsoleLogger, DiagLogLevel, Span } from '@opentelemetry/api'

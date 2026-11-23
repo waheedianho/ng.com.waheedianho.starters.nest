@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/infra/database.md
- */
 import 'dotenv/config'
 
 import { mongoMigrateCli } from 'mongo-migrate-ts'

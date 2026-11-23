@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/core/entity.md
- */
 import { BaseEntity } from '@/utils/entity'
 import { Infer, InputValidator } from '@/utils/validator'
 

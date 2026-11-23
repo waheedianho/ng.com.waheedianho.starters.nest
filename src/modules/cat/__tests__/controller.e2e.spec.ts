@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/test.md
- */
 import { ZodMockSchema } from '@mikemajesty/zod-mock-schema'
 import { DynamicModule, INestApplication } from '@nestjs/common'
 import { getConnectionToken } from '@nestjs/mongoose'

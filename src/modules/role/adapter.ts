@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/adapter.md
- */
 import { RoleAddPermissionInput, RoleAddPermissionOutput } from '@/core/role/use-cases/role-add-permission'
 import { RoleCreateInput, RoleCreateOutput } from '@/core/role/use-cases/role-create'
 import { RoleDeleteInput, RoleDeleteOutput } from '@/core/role/use-cases/role-delete'

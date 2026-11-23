@@ -1,6 +1,3 @@
-/**
- * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/core/usecase.md
- */
 import { PermissionEntity } from '@/core/permission/entity/permission'
 import { ValidateSchema } from '@/utils/decorators'
 import { PaginationInput, PaginationOutput, PaginationSchema } from '@/utils/pagination'
