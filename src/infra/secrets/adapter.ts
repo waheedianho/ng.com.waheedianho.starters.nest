@@ -15,10 +15,10 @@ export abstract class ISecretsAdapter {
 
   TZ!: string
 
-  MONGO!: {
+  MONGO?: {
     MONGO_URL: string
     MONGO_DATABASE: string
-    MONGO_EXPRESS_URL: string
+    MONGO_EXPRESS_URL?: string
   }
 
   POSTGRES!: {

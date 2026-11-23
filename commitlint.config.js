@@ -18,6 +18,7 @@ scopes.push(
   'fix',
   'feature',
   'conflict',
+  'docs',
   'config',
   'entity',
   'utils',

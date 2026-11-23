@@ -10,7 +10,7 @@ import { ICacheAdapter } from '@/infra/cache'
 import { DatabaseConnectionOutput, DatabaseMemoryOutput, HealthStatus, Load, MemotyOutput } from './types'
 
 export abstract class IHealthAdapter {
-  abstract mongo: Connection
+  abstract mongo?: Connection
   abstract postgres: DataSource
   abstract redis: ICacheAdapter<RedisClientType>
   abstract getMongoStatus(): HealthStatus

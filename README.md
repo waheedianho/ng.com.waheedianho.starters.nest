@@ -1090,10 +1090,18 @@ npm install
 ### 2. Start Infrastructure
 
 ```bash
-npm run setup
+docker compose -f docker-compose-infra.yml up -d
 ```
 
-This starts PostgreSQL, MongoDB (replica set), Redis, Zipkin, Prometheus, Grafana, and more.
+This starts PostgreSQL, Redis, and the observability services. MongoDB is opt-in.
+
+To use MongoDB, set `ENABLE_MONGO=true`, `MONGO_URL`, and `MONGO_DATABASE` in `.env`. Set `MONGO_EXPRESS_URL` if you want to log a link to Mongo Express. For a local replica set, start the `mongo` profile:
+
+```bash
+docker compose -f docker-compose-infra.yml --profile mongo up -d
+```
+
+`InfraModule` imports `MongoDatabaseModule`, which opens the shared connection when MongoDB is enabled. `AppModule` imports `CatModule` directly. `CatModule` uses Nest's `ConditionalModule` internally to load its routes, providers, and `MongooseModule.forFeature(...)` registration when MongoDB is enabled. When MongoDB is disabled, health endpoints report it as disabled. Run `pnpm run migration-mongo:run` explicitly if a MongoDB feature needs migrations.
 
 ### 3. Run the Application
 
@@ -1120,7 +1128,7 @@ curl -X 'POST' \
 
 ### 5. Explore the API
 
-Open Swagger documentation: `http://localhost:5000/api-docs`
+Open Scalar at `http://localhost:5000/api-docs` or fetch the OpenAPI document at `http://localhost:5000/api-docs/openapi.json`. NestJS generates the document from controller decorators and shared Zod schemas in non-production environments.
 
 ---
 
@@ -1277,8 +1285,8 @@ Utility functions and helpers.
 ### Multi-Database Support
 
 - **PostgreSQL** with TypeORM for relational data
-- **MongoDB** with Mongoose (3-node replica set)
-- Automatic migrations
+- **Optional MongoDB** with a shared Mongoose connection and a local replica set profile
+- PostgreSQL migrations and opt-in MongoDB migration commands
 
 ### Observability
 
@@ -1292,7 +1300,7 @@ Utility functions and helpers.
 - **CRUD Scaffolding** — generate complete modules with `npm run scaffold`
 - **100% Test Coverage** — comprehensive test suites
 - **Type Safety** — full TypeScript with Zod validation
-- **API Documentation** — Swagger UI with TypeSpec
+- **API Documentation** — Scalar with OpenAPI generated from NestJS controllers
 
 ### Resilience
 
@@ -1312,7 +1320,7 @@ Utility functions and helpers.
 | **Testing** | Jest, Supertest, Testcontainers |
 | **Code Quality** | ESLint, Prettier, Husky, Commitlint |
 | **DevOps** | Docker, Docker Compose, PM2, GitHub Actions |
-| **Documentation** | Swagger, TypeSpec |
+| **Documentation** | Scalar, NestJS Swagger, Zod |
 
 ---
 

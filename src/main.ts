@@ -8,13 +8,9 @@ import { NestFactory } from '@nestjs/core'
 import bodyParser from 'body-parser'
 import { bold } from 'colorette'
 import compression from 'compression'
-import { NextFunction, Request, Response } from 'express'
-import fs from 'fs'
+import type { NextFunction, Request, Response } from 'express'
 import helmet from 'helmet'
 import { IncomingMessage, ServerResponse } from 'http'
-import yaml from 'js-yaml'
-import path from 'path'
-import swagger from 'swagger-ui-express'
 
 import { ILoggerAdapter } from '@/infra/logger/adapter'
 import { ISecretsAdapter } from '@/infra/secrets'
@@ -23,6 +19,7 @@ import { ExceptionHandlerFilter } from '@/middlewares/filters'
 import { name } from '../package.json'
 import { AppModule } from './app.module'
 import { ErrorType } from './infra/logger'
+import { apiDocsPath, mountApiDocumentation } from './utils/api-docs'
 import { CryptoUtils } from './utils/crypto'
 import { changeLanguage, initI18n, normalizeLocale } from './utils/validator'
 
@@ -106,7 +103,7 @@ async function bootstrap() {
   const {
     ENV,
     TIMEOUT,
-    MONGO: { MONGO_URL, MONGO_EXPRESS_URL },
+    MONGO,
     POSTGRES: { POSTGRES_URL, POSTGRES_PGADMIN_URL },
     PORT,
     HOST,
@@ -131,27 +128,23 @@ async function bootstrap() {
   })
 
   if (!IS_PRODUCTION) {
-    const swaggerDocument = yaml.load(
-      fs.readFileSync(path.join(__dirname, '../api-spec/tsp-output/@typespec/openapi3/openapi.api.1.0.yaml'), 'utf8')
-    )
-    app.use('/api-docs', swagger.serve, swagger.setup(swaggerDocument as swagger.SwaggerOptions))
+    mountApiDocumentation(app)
   }
 
   loggerService.log(`🔵 Postgres listening at ${bold(POSTGRES_URL)}`)
   loggerService.log(
     `🔶 PgAdmin listening at ${bold(POSTGRES_PGADMIN_URL)} user: ${bold('pgadmin@gmail.com')} password: ${bold('PgAdmin2019!')}`
   )
-  loggerService.log(`🔵 Mongo listening at ${bold(MONGO_URL)}`)
-  loggerService.log(
-    `🔶 Mongo express listening at ${bold(MONGO_EXPRESS_URL)} user: ${bold('admin')} password: ${bold('pass')}\n`
-  )
+  if (MONGO?.MONGO_EXPRESS_URL) {
+    loggerService.log(`🔶 Mongo Express at ${bold(MONGO.MONGO_EXPRESS_URL)}`)
+  }
   loggerService.log(`⚪ Grafana[${bold('Graphs')}] listening at ${bold(GRAFANA_URL)}`)
   loggerService.log(`⚪ Zipkin[${bold('Tracing')}] listening at ${bold(ZIPKIN_URL)}`)
   loggerService.log(`⚪ Promethues[${bold('Metrics')}] listening at ${bold(PROMETHUES_URL)}\n`)
 
   await app.listen(PORT, () => {
     loggerService.log(`🟢 ${name} listening at ${bold(PORT)} on ${bold(ENV?.toUpperCase())} 🟢`)
-    if (!IS_PRODUCTION) loggerService.log(`🟢 Swagger listening at ${bold(`${HOST}/api-docs`)} 🟢`)
+    if (!IS_PRODUCTION) loggerService.log(`🟢 Scalar documentation at ${bold(`${HOST}${apiDocsPath}`)} 🟢`)
   })
 
   function setTimeout() {

@@ -2,9 +2,9 @@
  * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/test.md
  */
 import { ZodMockSchema } from '@mikemajesty/zod-mock-schema'
-import { INestApplication } from '@nestjs/common'
+import { DynamicModule, INestApplication } from '@nestjs/common'
+import { getConnectionToken } from '@nestjs/mongoose'
 import { Test } from '@nestjs/testing'
-import mongoose, { PaginateModel, Schema } from 'mongoose'
 import request from 'supertest'
 
 import { CatEntity, CatEntitySchema } from '@/core/cat/entity/cat'
@@ -12,11 +12,7 @@ import { ICatRepository } from '@/core/cat/repository/cat'
 import { ICacheAdapter } from '@/infra/cache'
 import { RedisService } from '@/infra/cache/redis'
 import { ConnectionName } from '@/infra/database/enum'
-import { Cat, CatDocument, CatSchema } from '@/infra/database/mongo/schemas/cat'
 import { TestMongoContainer, TestRedisContainer } from '@/utils/test/containers'
-
-import { CatModule } from '../module'
-import { CatRepository } from '../repository'
 
 describe('CatController', () => {
   let app: INestApplication
@@ -26,25 +22,22 @@ describe('CatController', () => {
   const containerRedis = new TestRedisContainer()
 
   beforeAll(async () => {
+    jest.replaceProperty(process, 'env', { ...process.env, ENABLE_MONGO: 'true' })
+    const { CatModule } = await import('../module')
     const { mongoConnection } = await containerMongo.getTestMongo(ConnectionName.CATS)
+    const connectionToken = getConnectionToken()
+    const repositoryToken = Symbol('CatRepository from CatModule')
+    const mongoConnectionModule: DynamicModule = {
+      module: class TestMongoConnectionModule {},
+      global: true,
+      providers: [{ provide: connectionToken, useValue: mongoConnection }],
+      exports: [connectionToken]
+    }
 
     const moduleRef = await Test.createTestingModule({
-      imports: [CatModule]
+      imports: [mongoConnectionModule, CatModule],
+      providers: [{ provide: repositoryToken, useExisting: ICatRepository }]
     })
-      .overrideProvider(ICatRepository)
-      .useFactory({
-        factory() {
-          {
-            type Model = mongoose.PaginateModel<CatDocument>
-
-            const repository: PaginateModel<CatDocument> = mongoConnection.model<CatDocument, Model>(
-              Cat.name,
-              CatSchema as Schema
-            )
-            return new CatRepository(repository)
-          }
-        }
-      })
       .overrideProvider(ICacheAdapter)
       .useFactory({
         async factory(): Promise<RedisService> {
@@ -56,7 +49,7 @@ describe('CatController', () => {
       .compile()
 
     app = moduleRef.createNestApplication()
-    repository = app.get(ICatRepository)
+    repository = app.get(repositoryToken)
     await app.init()
   })
 
@@ -72,6 +65,7 @@ describe('CatController', () => {
   })
 
   afterAll(async () => {
+    jest.restoreAllMocks()
     await containerMongo.close()
     await containerRedis.close()
     await app.close()

@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { ISecretsAdapter } from './adapter'
-import { EnvEnum } from './types'
+import { EnvEnum, isMongoEnabled } from './types'
 
 @Injectable()
 export class SecretsService implements ISecretsAdapter {
@@ -31,11 +31,13 @@ export class SecretsService implements ISecretsAdapter {
 
   REDIS_URL = this.config.get('REDIS_URL')
 
-  MONGO = {
-    MONGO_URL: this.config.get('MONGO_URL'),
-    MONGO_DATABASE: this.config.get('MONGO_DATABASE'),
-    MONGO_EXPRESS_URL: this.config.get('MONGO_EXPRESS_URL')
-  }
+  MONGO = isMongoEnabled(this.config.get<string>('ENABLE_MONGO'))
+    ? {
+        MONGO_URL: this.config.get('MONGO_URL'),
+        MONGO_DATABASE: this.config.get('MONGO_DATABASE'),
+        MONGO_EXPRESS_URL: this.config.get('MONGO_EXPRESS_URL') || undefined
+      }
+    : undefined
 
   EMAIL = {
     HOST: this.config.get('EMAIL_HOST'),

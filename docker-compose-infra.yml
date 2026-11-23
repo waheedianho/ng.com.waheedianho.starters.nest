@@ -1,5 +1,6 @@
 services:
   nestjs-microservice-primary:
+    profiles: [mongo]
     container_name: nestjs-microservice-primary
     image: mongo:7.0
     networks:
@@ -21,6 +22,7 @@ services:
       - .env
 
   nestjs-microservice-secondary:
+    profiles: [mongo]
     container_name: nestjs-microservice-secondary
     image: mongo:7.0
     healthcheck:
@@ -58,6 +60,7 @@ services:
     ports:
       - "27018:27017"
   nestjs-microservice-tertiary:
+    profiles: [mongo]
     container_name: nestjs-microservice-tertiary
     image: mongo:7.0
     healthcheck:
@@ -96,6 +99,7 @@ services:
       - "27019:27017"
       
   mongo-init-replica:
+    profiles: [mongo]
     container_name: mongo-init-replica
     image: mongo:7.0
     depends_on:
@@ -208,6 +212,7 @@ services:
     restart: unless-stopped
 
   mongo-express:
+    profiles: [mongo]
     container_name: nestjs-microservice-mongo-express
     image: mongo-express:1.0.0-20-alpine3.18
     depends_on:

@@ -1,5 +1,7 @@
 # Documentation
 
+The running app generates its OpenAPI document from NestJS controllers and serves it through Scalar at `/api-docs`. The TypeSpec project in this directory can compile the earlier standalone contract for reference.
+
 ### Building and Running the Documentation
 
 Documentation:

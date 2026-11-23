@@ -2,19 +2,27 @@
  * @see https://github.com/mikemajesty/nestjs-microservice-boilerplate-api/blob/master/guides/modules/controller.md
  */
 import { Controller, Delete, Get, HttpCode, Post, Put, Req, Version } from '@nestjs/common'
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
-import { CatCreateInput, CatCreateOutput } from '@/core/cat/use-cases/cat-create'
+import { CatEntitySchema } from '@/core/cat/entity/cat'
+import { CatCreateInput, CatCreateOutput, CatCreateSchema } from '@/core/cat/use-cases/cat-create'
 import { CatDeleteInput, CatDeleteOutput } from '@/core/cat/use-cases/cat-delete'
 import { CatGetByIdInput, CatGetByIdOutput } from '@/core/cat/use-cases/cat-get-by-id'
 import { CatListInput, CatListOutput } from '@/core/cat/use-cases/cat-list'
 import { CatUpdateInput, CatUpdateOutput } from '@/core/cat/use-cases/cat-update'
 import { Permission } from '@/utils/decorators'
+import { ApiErrors, ApiPaginatedResponse, ApiResourceId, createdResourceSchema, openApiSchema } from '@/utils/openapi'
 import { ApiRequest } from '@/utils/request'
 import { SearchHttpSchema } from '@/utils/search'
 import { SortHttpSchema } from '@/utils/sort'
 
 import { ICatCreateAdapter, ICatDeleteAdapter, ICatGetByIdAdapter, ICatListAdapter, ICatUpdateAdapter } from './adapter'
 
+const catSchema = openApiSchema(CatEntitySchema)
+
+@ApiTags('Cats')
+@ApiBearerAuth()
+@ApiErrors(401, 403)
 @Controller('cats')
 export class CatController {
   constructor(
@@ -25,6 +33,10 @@ export class CatController {
     private readonly deleteUsecase: ICatDeleteAdapter
   ) {}
 
+  @ApiOperation({ summary: 'Create a cat' })
+  @ApiBody({ schema: openApiSchema(CatCreateSchema) })
+  @ApiCreatedResponse({ schema: createdResourceSchema })
+  @ApiErrors(400)
   @Post()
   @Version('1')
   @Permission('cat:create')
@@ -33,6 +45,11 @@ export class CatController {
     return await this.createUsecase.execute(body as CatCreateInput, { user, tracing })
   }
 
+  @ApiOperation({ summary: 'Update a cat' })
+  @ApiResourceId()
+  @ApiBody({ schema: openApiSchema(CatCreateSchema.partial()) })
+  @ApiOkResponse({ schema: catSchema })
+  @ApiErrors(400, 404)
   @Put(':id')
   @Version('1')
   @Permission('cat:update')
@@ -40,6 +57,10 @@ export class CatController {
     return await this.updateUsecase.execute({ ...body, id: params.id } as CatUpdateInput, { user, tracing })
   }
 
+  @ApiOperation({ summary: 'Get a cat' })
+  @ApiResourceId()
+  @ApiOkResponse({ schema: catSchema })
+  @ApiErrors(400, 404)
   @Get(':id')
   @Version('1')
   @Permission('cat:getbyid')
@@ -47,6 +68,8 @@ export class CatController {
     return await this.getByIdUsecase.execute(params as CatGetByIdInput)
   }
 
+  @ApiOperation({ summary: 'List cats' })
+  @ApiPaginatedResponse(CatEntitySchema)
   @Get()
   @Version('1')
   @Permission('cat:list')
@@ -61,6 +84,10 @@ export class CatController {
     return await this.listUsecase.execute(input)
   }
 
+  @ApiOperation({ summary: 'Delete a cat' })
+  @ApiResourceId()
+  @ApiOkResponse({ schema: catSchema })
+  @ApiErrors(400, 404)
   @Delete(':id')
   @Version('1')
   @Permission('cat:delete')

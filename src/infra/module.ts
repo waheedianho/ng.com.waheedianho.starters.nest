@@ -22,7 +22,6 @@ import { SecretsModule } from './secrets'
   ],
   exports: [
     SecretsModule,
-    MongoDatabaseModule,
     PostgresDatabaseModule,
     LoggerModule,
     HttpModule,

@@ -27,7 +27,8 @@ export default [
             '**/test/*.ts',
             '**/commitlint.config.js',
             '**/ecosystem.config.js',
-            '**/*.md'
+            '**/*.md',
+            'migration.js'
         ]
     },
     ...compat.extends(

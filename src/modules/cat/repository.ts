@@ -12,11 +12,11 @@ import { Cat, CatDocument } from '@/infra/database/mongo/schemas/cat'
 import { MongoRepository } from '@/infra/repository'
 import { ConvertMongooseFilter, SearchTypeEnum, ValidateDatabaseSortAllowed } from '@/utils/decorators'
 import { IEntity } from '@/utils/entity'
-import { FilterQuery, MongoRepositoryModelSessionType } from '@/utils/mongoose'
+import { FilterQuery } from '@/utils/mongoose'
 
 @Injectable()
 export class CatRepository extends MongoRepository<CatDocument> implements ICatRepository {
-  constructor(@InjectModel(Cat.name) readonly entity: MongoRepositoryModelSessionType<PaginateModel<CatDocument>>) {
+  constructor(@InjectModel(Cat.name) readonly entity: PaginateModel<CatDocument>) {
     super(entity)
   }
 
